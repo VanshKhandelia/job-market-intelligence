@@ -17,13 +17,13 @@ COMPANIES = [
     "Global Relay", "Rogers", "Celestica", "Kinaxis", "Salesforce",
     "Softchoice", "Staples", "Huawei Technologies Canada Co", "Hootsuite",
     "Mitel","Google", "Amazon", "IBM",
-    "SAP", "Deloitte", "Accenture", "Celestica",
+    "SAP", "Deloitte", "Accenture"
 ]
 
 BASE_URL = "https://api.adzuna.com/v1/api/jobs/ca/search"
 
-def fetch_jobs_for_company(company: str, pages: int = 3) -> list:
-    """Fetch job postings for a single company — pulls up to 3 pages"""
+def fetch_jobs_for_company(company: str, pages: int = 10) -> list:
+    """Fetch job postings for a single company — pulls up to 10 pages"""
     all_jobs = []
 
     for page in range(1, pages + 1):
