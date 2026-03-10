@@ -90,12 +90,8 @@ def run_extraction():
     df = pd.DataFrame(all_jobs)
     df.drop_duplicates(subset=["job_id"], inplace=True)  # remove dupes
     
-    output_path = "data/raw_jobs.csv"
-    os.makedirs("data", exist_ok=True)
-    #df.to_csv(output_path, index=False)
+  
     load_directly_to_snowflake(df)
-
-    print(f"\n✅ Done! {len(df)} unique jobs saved to {output_path}")
     print(f"Companies covered: {df['company_name_searched'].nunique()}")
     print(f"Job categories found: {df['category'].value_counts().head(10)}")
 
