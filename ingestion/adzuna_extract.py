@@ -5,6 +5,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import time
 from datetime import datetime
+from snowflake_loader import load_directly_to_snowflake
 
 load_dotenv()
 
@@ -63,7 +64,7 @@ def fetch_jobs_for_company(company: str, pages: int = 10) -> list:
                 })
 
             print(f"  ✓ {company} — page {page}: {len(jobs)} jobs")
-            time.sleep(0.5)  # be polite to the API
+            time.sleep(0.1)  # be polite to the API
 
         except Exception as e:
             print(f"  ✗ Error fetching {company} page {page}: {e}")
@@ -83,7 +84,7 @@ def run_extraction():
         jobs = fetch_jobs_for_company(company)
         all_jobs.extend(jobs)
         print(f"  → Total so far: {len(all_jobs)} jobs\n")
-        time.sleep(1)  # pause between companies
+        time.sleep(0.2)  # pause between companies
 
     # Save raw to CSV as backup
     df = pd.DataFrame(all_jobs)
@@ -91,7 +92,8 @@ def run_extraction():
     
     output_path = "data/raw_jobs.csv"
     os.makedirs("data", exist_ok=True)
-    df.to_csv(output_path, index=False)
+    #df.to_csv(output_path, index=False)
+    load_directly_to_snowflake(df)
 
     print(f"\n✅ Done! {len(df)} unique jobs saved to {output_path}")
     print(f"Companies covered: {df['company_name_searched'].nunique()}")

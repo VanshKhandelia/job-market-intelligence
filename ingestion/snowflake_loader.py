@@ -42,11 +42,8 @@ def test_connection():
     
 
 
-def load_csv_to_bronze():
-    
-    # Read the CSV
-    df = pd.read_csv("data/raw_jobs.csv")
-    
+def load_directly_to_snowflake(df):
+
     def clean_value(v):
         try:
             if v is None:
@@ -64,10 +61,12 @@ def load_csv_to_bronze():
     # Connect to Snowflake
     conn = get_snowflake_connection()
     cursor = conn.cursor()
-    
+
+
     # Get all existing job_ids from Snowflake in one query
     cursor.execute("SELECT job_id FROM BRONZE.RAW_JOB_POSTINGS")
-    existing_ids = {row[0] for row in cursor.fetchall()}  # a set for fast lookup
+    existing_ids = {str(row[0]) for row in cursor.fetchall()}
+
     
     # Filter to only new rows
     new_rows = [row for row in rows if row[1] not in existing_ids]  # row[1] is job_id
@@ -96,5 +95,5 @@ def load_csv_to_bronze():
 # This means: only run test_connection() if we run THIS file directly
 # If another file imports this, it won't auto-run
 if __name__ == "__main__":
-    # test_connection()
-    load_csv_to_bronze()
+    test_connection()
+    #load_directly_to_bronze()
